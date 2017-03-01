@@ -3,7 +3,7 @@ package nl.beehivejava.scriptj;
 import java.util.Objects;
 
 /**
- * This class provides information about a {@code Plugin}. It is the result of parsing a plugin-information file.s
+ * This class provides information about a {@code Plugin}. It is the result of parsing a plugin-information file.
  *
  * @author Lesley
  */
