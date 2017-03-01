@@ -9,6 +9,10 @@ public final class ObjectBuilders {
         throw new UnsupportedOperationException("Should not be instantiated.");
     }
 
+    public static PluginBuilder plugin() {
+        return new PluginBuilder();
+    }
+
     public static PluginInformationBuilder pluginInformation() {
         return new PluginInformationBuilder();
     }
