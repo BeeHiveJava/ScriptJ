@@ -4,6 +4,7 @@ import nl.beehivejava.scriptj.script.ScriptInformation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -66,7 +67,7 @@ public final class PluginInformation {
      * @return A {@link Collection} of {@code Scripts} that this {@code Plugin} contains.
      */
     public Collection<ScriptInformation> scripts() {
-        return scripts;
+        return Collections.unmodifiableCollection(scripts);
     }
 
 }
