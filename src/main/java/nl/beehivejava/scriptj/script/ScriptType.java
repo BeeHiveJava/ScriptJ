@@ -51,9 +51,7 @@ public enum ScriptType {
         Optional<ScriptType> optional = SCRIPT_TYPE_CACHE.stream()
                 .filter(s -> s.identifiers.contains(identifier))
                 .findAny();
-        optional.orElseThrow(NullPointerException::new);
-
-        return optional.get();
+        return optional.orElseThrow(NullPointerException::new);
     }
 
     /**
