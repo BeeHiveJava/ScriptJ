@@ -51,7 +51,7 @@ public final class Plugin {
             throw new IllegalStateException("This plugin is already started.");
         }
 
-        if (scripts.size() < 1) {
+        if (scripts.isEmpty()) {
             throw new IllegalStateException("This plugin has no scripts to start.");
         }
 
