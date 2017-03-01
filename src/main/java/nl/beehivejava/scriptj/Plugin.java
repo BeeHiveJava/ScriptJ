@@ -72,7 +72,7 @@ public final class Plugin {
     /**
      * Retrieves the {@code location} of the information file of this {@code Plugin}.
      *
-     * @return A {@link String} representing the location of information file of this {@code Plugin}.
+     * @return A {@link String} representing the location of the information file of this {@code Plugin}.
      */
     public String location() {
         return location;
