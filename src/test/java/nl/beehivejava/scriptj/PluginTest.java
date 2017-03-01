@@ -1,11 +1,19 @@
 package nl.beehivejava.scriptj;
 
+import nl.beehivejava.scriptj.script.Script;
 import nl.beehivejava.scriptj.util.builder.ObjectBuilders;
+import nl.beehivejava.scriptj.util.fake.FakeScript;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lesley
@@ -31,7 +39,8 @@ public final class PluginTest {
 
     @Test
     public void start_whenPluginIsStopped_setsStateToStarted() {
-        Plugin plugin = ObjectBuilders.plugin().build();
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
 
         plugin.start();
 
@@ -41,19 +50,41 @@ public final class PluginTest {
     }
 
     @Test
+    public void start_whenPluginIsStopped_callsStartOnScripts() {
+        FakeScript script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
+
+        plugin.start();
+
+        assertTrue(script.onStartCalled);
+    }
+
+    @Test
     public void start_whenPluginIsStarted_throwsException() {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("This plugin is already started.");
 
-        Plugin plugin = ObjectBuilders.plugin().build();
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
         plugin.start(); // Start it first, because it is stopped initially.
 
         plugin.start();
     }
 
     @Test
+    public void start_whenNoScriptsWereAdded_throwsException() {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("This plugin has no scripts to start.");
+
+        Plugin plugin = createDefaultPluginWith();
+
+        plugin.start();
+    }
+
+    @Test
     public void stop_whenPluginIsStarted_setsStateToStopped() {
-        Plugin plugin = ObjectBuilders.plugin().build();
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
         plugin.start(); // Start it first, because it is stopped initially.
 
         plugin.stop();
@@ -64,13 +95,100 @@ public final class PluginTest {
     }
 
     @Test
+    public void stop_whenPluginIsStarted_callsStopOnScripts() {
+        FakeScript script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
+        plugin.start(); // Start it first, because it is stopped initially.
+
+        plugin.stop();
+
+        assertTrue(script.onStopCalled);
+    }
+
+    @Test
     public void stop_whenPluginIsStopped_throwsException() {
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("This plugin is already stopped.");
 
-        Plugin plugin = ObjectBuilders.plugin().build();
+        Plugin plugin = createDefaultPluginWith();
 
         plugin.stop();
+    }
+
+    @Test
+    public void addScript_whenPluginIsStoped_addsScriptToPlugin() {
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = ObjectBuilders.plugin().build();
+
+        plugin.addScript(script);
+
+        Collection<Script> expected = Arrays.asList(script);
+        Collection<Script> actual = plugin.scripts();
+        assertArrayEquals(expected.toArray(), actual.toArray());
+    }
+
+    @Test
+    public void addScript_nullScript_throwsException() {
+        expectedException.expect(NullPointerException.class);
+
+        Plugin plugin = createDefaultPluginWith();
+
+        plugin.addScript(null);
+    }
+
+    @Test
+    public void addScript_whenPluginIsStarted_throwsException() {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("Scripts cannot be added when a plugin is started.");
+
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
+
+        plugin.start();
+        plugin.addScript(script);
+    }
+
+    @Test
+    public void removeScript_whenPluginIsStopped_removesPlugin() {
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = ObjectBuilders.plugin().build();
+
+        plugin.addScript(script);
+        plugin.removeScript(script);
+
+        Collection<Script> expected = Collections.emptyList();
+        Collection<Script> actual = plugin.scripts();
+        assertArrayEquals(expected.toArray(), actual.toArray());
+    }
+
+    @Test
+    public void removeScript_nullScript_throwsException() {
+        expectedException.expect(NullPointerException.class);
+
+        Plugin plugin = createDefaultPluginWith();
+
+        plugin.removeScript(null);
+    }
+
+    @Test
+    public void removeScript_whenPluginIsStarted_throwsException() {
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("Scripts cannot be removed when a plugin is started.");
+
+        Script script = ObjectBuilders.script().build();
+        Plugin plugin = createDefaultPluginWith(script);
+
+        plugin.start();
+        plugin.removeScript(script);
+    }
+
+    @Test
+    public void scripts_byDefault_returnsEmptyCollection() {
+        Plugin plugin = createDefaultPluginWith();
+
+        Collection<Script> expected = Collections.emptyList();
+        Collection<Script> actual = plugin.scripts();
+        assertArrayEquals(expected.toArray(), actual.toArray());
     }
 
     @Test
@@ -99,6 +217,14 @@ public final class PluginTest {
         PluginInformation expected = information;
         PluginInformation actual = plugin.information();
         assertEquals(expected, actual);
+    }
+
+    private Plugin createDefaultPluginWith(Script... scripts) {
+        Plugin plugin = ObjectBuilders.plugin().build();
+
+        Arrays.asList(scripts).forEach(plugin::addScript);
+
+        return plugin;
     }
 
 }
