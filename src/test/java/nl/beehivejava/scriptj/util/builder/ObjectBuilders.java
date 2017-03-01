@@ -13,4 +13,8 @@ public final class ObjectBuilders {
         return new PluginInformationBuilder();
     }
 
+    public static ScriptInformationBuilder scriptInformation() {
+        return new ScriptInformationBuilder();
+    }
+
 }
