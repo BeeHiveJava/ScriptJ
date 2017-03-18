@@ -21,6 +21,8 @@ public final class FileResourceLoaderIntegrationTest {
     private static final String PATH_SEPARATOR = File.separator;
     private static final String NEW_LINE_SEPARATOR = System.getProperty("line.separator");
 
+    private static final String DEFAULT_RESOURCE_DIRECTORY = "build" + PATH_SEPARATOR + "resources" + PATH_SEPARATOR + "integrationTest" + PATH_SEPARATOR;
+
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
@@ -55,14 +57,14 @@ public final class FileResourceLoaderIntegrationTest {
 
         FileResourceLoader loader = ObjectBuilders.fileResourceLoader().build();
 
-        loader.load("build/resources/integrationTest/some_test_directory");
+        loader.load(DEFAULT_RESOURCE_DIRECTORY + "some_test_directory");
     }
 
     @Test
     public void load_validFile_convertsDataToValidInputStream() throws Exception {
         FileResourceLoader loader = ObjectBuilders.fileResourceLoader().build();
 
-        InputStream is = loader.load("build/resources/integrationTest/some_test_directory/some_file.unknown");
+        InputStream is = loader.load(DEFAULT_RESOURCE_DIRECTORY + "some_test_directory" + PATH_SEPARATOR + "some_file.unknown");
 
         String expected = "some data in a file";
         String actual = getStringFromInputStream(is);

@@ -21,15 +21,26 @@ public final class FileResourceLoader implements ResourceLoader {
         Objects.requireNonNull(location);
 
         Path path = Paths.get(location);
+        requireValidPath(path);
+
+        return Files.newInputStream(path);
+    }
+
+    private void requireValidPath(Path path) throws IOException {
+        requirePathExists(path);
+        requirePathIsFile(path);
+    }
+
+    private void requirePathExists(Path path) throws IOException {
         if (!path.toFile().exists()) {
             throw new FileNotFoundException();
         }
+    }
 
+    private void requirePathIsFile(Path path) {
         if (!path.toFile().isFile()) {
             throw new IllegalArgumentException();
         }
-
-        return Files.newInputStream(path);
     }
 
 }
