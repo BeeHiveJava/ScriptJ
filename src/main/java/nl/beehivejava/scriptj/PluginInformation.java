@@ -43,6 +43,25 @@ public final class PluginInformation {
         this.scripts.addAll(Arrays.asList(scripts));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PluginInformation)) {
+            return false;
+        }
+
+        PluginInformation other = (PluginInformation) o;
+        return id == other.id && author.equals(other.author) && scripts.equals(other.scripts);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 19;
+        result = 31 * result + id.hashCode();
+        result = 31 * result + author.hashCode();
+        result = 31 * result + scripts.hashCode();
+        return result;
+    }
+
     /**
      * Retrieves the {@code id} of a {@code Plugin}.
      *
