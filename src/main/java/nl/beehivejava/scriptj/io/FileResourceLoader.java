@@ -28,6 +28,11 @@ public final class FileResourceLoader implements ResourceLoader {
         }
     }
 
+    private static void requireValidPath(Path path) throws IOException {
+        requirePathExists(path);
+        requirePathIsFile(path);
+    }
+
     @Override
     public InputStream load(String location) throws IOException {
         Objects.requireNonNull(location);
@@ -36,11 +41,6 @@ public final class FileResourceLoader implements ResourceLoader {
         requireValidPath(path);
 
         return Files.newInputStream(path);
-    }
-
-    private void requireValidPath(Path path) throws IOException {
-        requirePathExists(path);
-        requirePathIsFile(path);
     }
 
 }
