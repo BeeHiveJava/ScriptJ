@@ -16,6 +16,18 @@ import java.util.Objects;
  */
 public final class FileResourceLoader implements ResourceLoader {
 
+    private static void requirePathExists(Path path) throws IOException {
+        if (!path.toFile().exists()) {
+            throw new FileNotFoundException();
+        }
+    }
+
+    private static void requirePathIsFile(Path path) {
+        if (!path.toFile().isFile()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     @Override
     public InputStream load(String location) throws IOException {
         Objects.requireNonNull(location);
@@ -29,18 +41,6 @@ public final class FileResourceLoader implements ResourceLoader {
     private void requireValidPath(Path path) throws IOException {
         requirePathExists(path);
         requirePathIsFile(path);
-    }
-
-    private void requirePathExists(Path path) throws IOException {
-        if (!path.toFile().exists()) {
-            throw new FileNotFoundException();
-        }
-    }
-
-    private void requirePathIsFile(Path path) {
-        if (!path.toFile().isFile()) {
-            throw new IllegalArgumentException();
-        }
     }
 
 }
