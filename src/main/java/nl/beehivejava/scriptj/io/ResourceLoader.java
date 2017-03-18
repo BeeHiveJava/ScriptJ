@@ -9,6 +9,7 @@ import java.io.InputStream;
  *
  * @author Lesley
  */
+@FunctionalInterface
 public interface ResourceLoader {
 
     /**
