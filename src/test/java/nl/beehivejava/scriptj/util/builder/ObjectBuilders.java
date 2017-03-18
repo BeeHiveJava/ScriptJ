@@ -25,4 +25,8 @@ public final class ObjectBuilders {
         return new ScriptInformationBuilder();
     }
 
+    public static FileResourceLoaderBuilder fileResourceLoader() {
+        return new FileResourceLoaderBuilder();
+    }
+
 }

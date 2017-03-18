@@ -42,10 +42,10 @@ task integrationTest(type: Test) {
 
     jacoco {
         append = true
-        destinationFile = file("../build/jacoco/test-it.exec")
+        destinationFile = file("build/jacoco/test-it.exec")
     }
 
-    reports.junitXml.destination = "../build/test-it-reports"
+    reports.junitXml.destination = "build/test-reports"
 }
 
 tasks.withType(Test) {
