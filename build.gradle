@@ -7,8 +7,18 @@ apply plugin: 'jacoco'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-    mavenCentral()
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -24,5 +34,28 @@ test {
     }
 
     reports.junitXml.destination = "build/test-reports"
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    jacoco {
+        append = true
+        destinationFile = file("../build/jacoco/test-it.exec")
+    }
+
+    reports.junitXml.destination = "../build/test-it-reports"
+}
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+repositories {
+    mavenCentral()
 }
 
