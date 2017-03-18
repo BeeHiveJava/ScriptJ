@@ -50,7 +50,7 @@ public final class PluginInformation {
         }
 
         PluginInformation other = (PluginInformation) o;
-        return id == other.id && author.equals(other.author) && scripts.equals(other.scripts);
+        return id.equals(other.id) && author.equals(other.author) && scripts.equals(other.scripts);
     }
 
     @Override
