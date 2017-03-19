@@ -13,6 +13,7 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -181,6 +182,52 @@ public final class PluginTest {
         plugin.start();
         plugin.removeScript(script);
     }
+
+    @Test
+    public void equals_sameObjects_returnsTrue() {
+        Plugin plugin1 = ObjectBuilders.plugin().build();
+        Plugin plugin2 = ObjectBuilders.plugin().build();
+
+        boolean result = plugin1.equals(plugin2);
+        assertTrue(result);
+    }
+
+    @Test
+    public void equals_nullObject_returnsFalse() {
+        Plugin plugin1 = ObjectBuilders.plugin().build();
+        Plugin plugin2 = null;
+
+        boolean result = plugin1.equals(plugin2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_differentId_returnsFalse() {
+        Plugin plugin1 = ObjectBuilders.plugin().withPluginInformation(ObjectBuilders.pluginInformation().withId("id1").build()).build();
+        Plugin plugin2 = ObjectBuilders.plugin().withPluginInformation(ObjectBuilders.pluginInformation().withId("id2").build()).build();
+
+        boolean result = plugin1.equals(plugin2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void hashCode_sameObjects_returnsSameHashCode() {
+        Plugin plugin1 = ObjectBuilders.plugin().build();
+        Plugin plugin2 = ObjectBuilders.plugin().build();
+
+        boolean result = plugin1.hashCode() == plugin2.hashCode();
+        assertTrue(result);
+    }
+
+    @Test
+    public void hashCode_differentObjects_returnsDifferentHashCode() {
+        Plugin plugin1 = ObjectBuilders.plugin().withPluginInformation(ObjectBuilders.pluginInformation().withId("id1").build()).build();
+        Plugin plugin2 = ObjectBuilders.plugin().withPluginInformation(ObjectBuilders.pluginInformation().withId("id2").build()).build();
+
+        boolean result = plugin1.hashCode() == plugin2.hashCode();
+        assertFalse(result);
+    }
+
 
     @Test
     public void scripts_byDefault_returnsEmptyCollection() {

@@ -113,6 +113,23 @@ public final class Plugin {
         scripts.remove(script);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Plugin)) {
+            return false;
+        }
+
+        Plugin other = (Plugin) o;
+        return information.id().equals(other.information.id());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 19;
+        result = 31 * result + information.id().hashCode();
+        return result;
+    }
+
     /**
      * Retrieves all {@link Script Scripts} that were added to this {@code Plugin}.
      *
