@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lesley
@@ -27,6 +29,60 @@ public final class ScriptInformationTest {
         expectedException.expect(NullPointerException.class);
 
         ScriptInformation information = ObjectBuilders.scriptInformation().withScriptType(null).build();
+    }
+
+    @Test
+    public void equals_sameObject_returnsTrue() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().build();
+
+        boolean result = script1.equals(script2);
+        assertTrue(result);
+    }
+
+    @Test
+    public void equals_nullObject_returnsFalse() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().build();
+        ScriptInformation script2 = null;
+
+        boolean result = script1.equals(script2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_otherName_returnsFalse() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().withName("name1").build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().withName("name2").build();
+
+        boolean result = script1.equals(script2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_otherScriptType_returnsFalse() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().withScriptType(ScriptType.JAVASCRIPT).build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().withScriptType(ScriptType.RUBY).build();
+
+        boolean result = script1.equals(script2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void hashCode_sameObjects_returnSameHashCode() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().build();
+
+        boolean result = script1.hashCode() == script2.hashCode();
+        assertTrue(result);
+    }
+
+    @Test
+    public void hashCode_otherObjects_returnSameHashCode() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().withName("name1").build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().withName("name2").build();
+
+        boolean result = script1.hashCode() == script2.hashCode();
+        assertFalse(result);
     }
 
     @Test

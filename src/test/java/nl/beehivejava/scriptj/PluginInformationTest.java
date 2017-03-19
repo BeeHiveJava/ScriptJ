@@ -11,6 +11,8 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lesley
@@ -47,6 +49,71 @@ public final class PluginInformationTest {
         expectedException.expectMessage("At least one script is required.");
 
         PluginInformation information = ObjectBuilders.pluginInformation().withScripts().build();
+    }
+
+    @Test
+    public void equals_sameObjects_returnsTrue() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().build();
+
+        boolean result = information1.equals(information2);
+        assertTrue(result);
+    }
+
+    @Test
+    public void equals_nullObject_returnsTrue() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().build();
+        PluginInformation information2 = null;
+
+        boolean result = information1.equals(information2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_otherId_returnsTrue() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().withId("id1").build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().withId("id2").build();
+
+        boolean result = information1.equals(information2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_otherAuthor_returnsTrue() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().withAuthor("author1").build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().withAuthor("author2").build();
+
+        boolean result = information1.equals(information2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void equals_otherScripts_returnsTrue() {
+        ScriptInformation script1 = ObjectBuilders.scriptInformation().withName("name1").build();
+        ScriptInformation script2 = ObjectBuilders.scriptInformation().withName("name2").build();
+        PluginInformation information1 = ObjectBuilders.pluginInformation().withScripts(script1).build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().withScripts(script2).build();
+
+        boolean result = information1.equals(information2);
+        assertFalse(result);
+    }
+
+    @Test
+    public void hashCode_sameObjects_returnsSameHashCode() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().build();
+
+        boolean result = information1.hashCode() == information2.hashCode();
+        assertTrue(result);
+    }
+
+    @Test
+    public void hashCode_differentObjects_returnsSameHashCode() {
+        PluginInformation information1 = ObjectBuilders.pluginInformation().withId("id1").build();
+        PluginInformation information2 = ObjectBuilders.pluginInformation().withId("id2").build();
+
+        boolean result = information1.hashCode() == information2.hashCode();
+        assertFalse(result);
     }
 
     @Test

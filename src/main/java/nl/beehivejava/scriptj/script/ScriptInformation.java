@@ -26,6 +26,24 @@ public final class ScriptInformation {
         this.type = Objects.requireNonNull(type);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ScriptInformation)) {
+            return false;
+        }
+
+        ScriptInformation other = (ScriptInformation) o;
+        return name.equals(other.name) && type.equals(other.type);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 19;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
+
     /**
      * Retrieves the name of this {@code Script}.
      *

@@ -42,6 +42,20 @@ public final class ScriptTypeTest {
     }
 
     @Test
+    public void parse_rb_returnsRuby() {
+        ScriptType expected = ScriptType.RUBY;
+        ScriptType actual = ScriptType.parse("rb");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void parse_ruby_returnsRuby() {
+        ScriptType expected = ScriptType.RUBY;
+        ScriptType actual = ScriptType.parse("ruby");
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void parse_nullIdentifier_throwsException() {
         expectedException.expect(NullPointerException.class);
 

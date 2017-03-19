@@ -20,7 +20,13 @@ public enum ScriptType {
      * Defines the JavaScript-language. Scripts with a {@link ScriptType#JAVASCRIPT} type are written in JavaScript and
      * can be ran inside JavaScript-supporting {@code PluginEnvironments}.
      */
-    JAVASCRIPT("js", "javascript");
+    JAVASCRIPT("js", "javascript"),
+
+    /**
+     * Defines the Ruby-language. Scripts with a {@link ScriptType#RUBY} type are written in Ruby and can be ran inside
+     * Ruby-supporting {@code PluginEnvironments}.
+     */
+    RUBY("rb", "ruby");
 
     private static final Collection<ScriptType> SCRIPT_TYPE_CACHE = EnumSet.allOf(ScriptType.class);
 
