@@ -21,6 +21,10 @@ public final class ObjectBuilders {
         return new PluginInformationBuilder();
     }
 
+    public static JsonPluginInformationParserBuilder jsonPluginInformationParser() {
+        return new JsonPluginInformationParserBuilder();
+    }
+
     public static ScriptInformationBuilder scriptInformation() {
         return new ScriptInformationBuilder();
     }
