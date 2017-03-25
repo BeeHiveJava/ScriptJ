@@ -4,6 +4,8 @@ import nl.beehivejava.scriptj.Plugin;
 import nl.beehivejava.scriptj.io.ResourceLoader;
 import nl.beehivejava.scriptj.parser.PluginInformationParser;
 import nl.beehivejava.scriptj.util.builder.ObjectBuilders;
+import nl.beehivejava.scriptj.util.fake.FakeScript;
+import nl.beehivejava.scriptj.util.fake.FakeScriptLoader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,6 +33,12 @@ public final class DefaultPluginLoaderIntegrationTest {
         ResourceLoader resourceLoader = ObjectBuilders.fileResourceLoader().build();
         PluginInformationParser parser = ObjectBuilders.jsonPluginInformationParser().build();
         DefaultPluginLoader loader = ObjectBuilders.defaultPluginLoader().withResourceLoader(resourceLoader).withParser(parser).build();
+
+        FakeScript script = ObjectBuilders.script().build();
+        FakeScriptLoader scriptLoader = new FakeScriptLoader();
+        scriptLoader.scriptToLoad = script;
+        scriptLoader.compatibleScriptType = script.information().type();
+        loader.addScriptLoader(scriptLoader);
 
         Plugin expected = ObjectBuilders.plugin().build();
         Plugin actual = loader.load(DEFAULT_RESOURCE_DIRECTORY + "some_test_directory" + PATH_SEPARATOR + "default_plugin.json");
