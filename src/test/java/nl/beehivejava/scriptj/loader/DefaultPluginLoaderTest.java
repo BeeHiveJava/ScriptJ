@@ -2,8 +2,11 @@ package nl.beehivejava.scriptj.loader;
 
 import nl.beehivejava.scriptj.Plugin;
 import nl.beehivejava.scriptj.parser.PluginInformationParser;
+import nl.beehivejava.scriptj.script.Script;
 import nl.beehivejava.scriptj.util.builder.ObjectBuilders;
 import nl.beehivejava.scriptj.util.fake.FakeResourceLoader;
+import nl.beehivejava.scriptj.util.fake.FakeScript;
+import nl.beehivejava.scriptj.util.fake.FakeScriptLoader;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -12,6 +15,7 @@ import org.mockito.Matchers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -51,6 +55,35 @@ public final class DefaultPluginLoaderTest extends PluginLoaderTest {
 
     @Test
     public void load_validLocation_loadsPlugin() throws Exception {
+        FakeScript script = ObjectBuilders.script().build();
+        FakeScriptLoader scriptLoader = new FakeScriptLoader();
+        scriptLoader.scriptToLoad = script;
+        scriptLoader.compatibleScriptType = script.information().type();
+
+        PluginLoader loader = makeDefaultPluginLoader();
+        loader.addScriptLoader(scriptLoader);
+
+        Plugin expectedPlugin = ObjectBuilders.plugin().build();
+        Plugin actualPlugin = loader.load("location");
+        assertEquals(expectedPlugin, actualPlugin);
+
+        Script[] expectedScript = new Script[]{script};
+        Script[] actualScript = actualPlugin.scripts().toArray(new Script[0]);
+        assertArrayEquals(expectedScript, actualScript);
+    }
+
+    @Test
+    public void load_noScriptLoader_throwsException() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("No ScriptLoader found for Script.");
+
+        PluginLoader loader = makeDefaultPluginLoader();
+
+        loader.load("location");
+    }
+
+    @Override
+    protected PluginLoader makeDefaultPluginLoader() throws Exception {
         InputStream is = makeDefaultInputStream();
 
         FakeResourceLoader stubResourceLoader = new FakeResourceLoader();
@@ -60,15 +93,7 @@ public final class DefaultPluginLoaderTest extends PluginLoaderTest {
         doReturn(ObjectBuilders.pluginInformation().build()).when(stubParser).parse(Matchers.any(InputStream.class));
 
         DefaultPluginLoader loader = ObjectBuilders.defaultPluginLoader().withResourceLoader(stubResourceLoader).withParser(stubParser).build();
-
-        Plugin expected = ObjectBuilders.plugin().build();
-        Plugin actual = loader.load("location");
-        assertEquals(expected, actual);
-    }
-
-    @Override
-    protected PluginLoader makeDefaultPluginLoader() {
-        return ObjectBuilders.defaultPluginLoader().build();
+        return loader;
     }
 
     private InputStream makeDefaultInputStream() {

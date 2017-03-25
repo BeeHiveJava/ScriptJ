@@ -4,9 +4,16 @@ import nl.beehivejava.scriptj.Plugin;
 import nl.beehivejava.scriptj.PluginInformation;
 import nl.beehivejava.scriptj.io.ResourceLoader;
 import nl.beehivejava.scriptj.parser.PluginInformationParser;
+import nl.beehivejava.scriptj.script.Script;
+import nl.beehivejava.scriptj.script.ScriptInformation;
+import nl.beehivejava.scriptj.script.ScriptType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -16,6 +23,8 @@ import java.util.Objects;
  * @author Lesley
  */
 public final class DefaultPluginLoader implements PluginLoader {
+
+    private final Map<ScriptType, ScriptLoader> scriptLoaders = new EnumMap<>(ScriptType.class);
 
     private final ResourceLoader loader;
     private final PluginInformationParser parser;
@@ -39,8 +48,36 @@ public final class DefaultPluginLoader implements PluginLoader {
 
         try (InputStream is = loader.load(location)) {
             PluginInformation information = parser.parse(is);
+            Plugin plugin = new Plugin(location, information);
 
-            return new Plugin(location, information);
+            Path path = getPath(location);
+            for (ScriptInformation scriptInformation : information.scripts()) {
+                ScriptLoader scriptLoader = scriptLoaders.get(scriptInformation.type());
+                if (scriptLoader == null) {
+                    throw new IllegalArgumentException("No ScriptLoader found for Script.");
+                }
+
+                String scriptLocation = path.resolve(scriptInformation.name()).toString();
+                Script script = scriptLoader.load(scriptLocation);
+                plugin.addScript(script);
+            }
+
+            return plugin;
         }
+    }
+
+    @Override
+    public void addScriptLoader(ScriptLoader loader) {
+        Objects.requireNonNull(loader);
+
+        scriptLoaders.put(loader.compatibleScriptType(), loader);
+    }
+
+    private Path getPath(String location) {
+        Path path = Paths.get(location);
+        Path parent = path.getParent();
+        path = parent == null ? Paths.get("/") : parent;
+
+        return path;
     }
 }
