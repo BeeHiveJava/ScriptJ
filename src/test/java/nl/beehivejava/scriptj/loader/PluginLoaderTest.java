@@ -21,6 +21,15 @@ public abstract class PluginLoaderTest {
         loader.load(null);
     }
 
-    protected abstract PluginLoader makeDefaultPluginLoader();
+    @Test
+    public void addScriptLoader_nullLoader_throwsException() throws Exception {
+        internalExpectedException.expect(NullPointerException.class);
+
+        PluginLoader loader = makeDefaultPluginLoader();
+
+        loader.addScriptLoader(null);
+    }
+
+    protected abstract PluginLoader makeDefaultPluginLoader() throws Exception;
 
 }
