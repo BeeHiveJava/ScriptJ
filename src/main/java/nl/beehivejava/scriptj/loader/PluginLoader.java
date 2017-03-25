@@ -26,4 +26,12 @@ public interface PluginLoader {
      */
     Plugin load(String location) throws IOException;
 
+    /**
+     * Adds a {@link ScriptLoader} to this {@code PluginLoader}.
+     *
+     * @param loader The {@code ScriptLoader} to add, should not be {@code null}.
+     * @throws NullPointerException If the given {@code loader} is {@code null}.
+     */
+    void addScriptLoader(ScriptLoader loader);
+
 }
